@@ -52,7 +52,7 @@ void main()
         case 1:
             printf("\nEnter the name of the file: ");
             scanf("%s", dir.fname[dir.fileCount]);
-
+            printf("File %s created!",dir.fname[dir.fileCount]);
             dir.fileCount++;
             break;
 
