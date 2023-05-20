@@ -7,215 +7,205 @@
 #include <string.h>
 
 struct
-
 {
-
-	char dname[10], fname[10][10];	int fcnt;
+    char dname[10];
+    char fname[10][10];
+    int fileCount;
 
 } dir[10];
+
+int SearchDir(char dirName[10], int dirCount)
+{
+    /* if Dir found return 1, otherwise return -1 */
+    int i;
+    for (i = 0; i < dirCount; i++)
+    {
+        if (strcmp(dirName, dir[i].dname) == 0)
+        {
+            return i;
+        }
+    }
+
+    return -1;
+}
+
+int SearchFile(char fileName[10], int pos)
+{
+    /* if file found return position, otherwise return -1 */
+    int i;
+    for (i = 0; i < dir[pos].fileCount; i++)
+    {
+        if (strcmp(fileName, dir[pos].fname[i]) == 0)
+        {
+            return i;
+            break;
+        }
+    }
+
+    if (i == dir[pos].fileCount)
+        return -1;
+}
 
 void main()
 
 {
 
-	int i, ch, dcnt, k;
+    int i, j;
+    int ch, dirCount, flag, pos;
+    char fileName[30], dirName[30];
 
-	char f[30], d[30];
+    dirCount = 0;
 
-	dcnt = 0;
+    do
+    {
 
-	while (1)
+        printf("\n\n1. Create Directory\t2. Create File\t3. Delete File");
+        printf("\n4. Search File\t\t5. Display\t6. Exit\t \n Enter your choice: ");
+        scanf("%d", &ch);
 
-	{
+        switch (ch)
+        {
 
-		printf("\n\n1. Create Directory\t2. Create File\t3. Delete File");
+        case 1:
+            printf("\nEnter name of directory: ");
+            scanf("%s", dirName);
 
-		printf("\n4. Search File\t\t5. Display\t6. Exit\t \n Enter your choice --");
+            pos = SearchDir(dirName, dirCount);
 
-		scanf("%d", &ch);
+            if (pos != -1)      // flag == -1 means directory already exist
+            {
+                printf("\nDirectory %s already exist. Enter other names", dirName);
+                break;
+            }
 
-		switch (ch)
+            strcpy(dir[dirCount].dname, dirName);
+            dir[dirCount].fileCount = 0;
+            dirCount++;
 
-		{
+            printf("\nDirectory created");
+            break;
 
-		case 1:
+        case 2: // create files
+            printf("\nEnter name of the directory: ");
+            scanf("%s", dirName);
 
-			printf("\nEnter name of directory -- ");
+            pos = SearchDir(dirName, dirCount);
 
-			scanf("%s", dir[dcnt].dname);
+            if (pos == -1)      
+            {
+                printf("\nDirectory %s not found\n", dirName);
+                break;
+            }
 
-			dir[dcnt].fcnt = 0;
+            printf("\nEnter name of the file: ");
+            scanf("%s", fileName);
 
-			dcnt++;
+            flag = SearchFile(fileName, pos);
 
-			printf("Directory created");
 
-			break;
+            if (flag != -1)       // flag != -1 means file already exist
+            {
+                printf("File %s already exist", fileName);
+                break;
+            }
 
-		case 2:
+            
+            strcpy(dir[pos].fname[dir[pos].fileCount], fileName);
 
-			printf("\nEnter name of the directory -- ");
+            dir[pos].fileCount++;
+            printf("\nFile created");
 
-			scanf("%s", d);
+            break;
 
-			for (i = 0; i < dcnt; i++)
+        case 3: // Delete Files
 
-				if (strcmp(d, dir[i].dname) == 0)
+            printf("\nEnter name of the directory: ");
+            scanf("%s", dirName);
 
-				{
+            pos = SearchDir(dirName, dirCount);
 
-					printf("Enter name of the file -- ");
+            if (pos == -1)
+            {
+                printf("\nDirectory %s not found\n", dirName);
+                break;
+            }
 
-					scanf("%s", dir[i].fname[dir[i].fcnt]);
+            printf("Enter name of the file: ");
+            scanf("%s", fileName);
 
-					dir[i].fcnt++;
 
-					printf("File created");
+            flag = SearchFile(fileName, pos);
 
-					break;
+            if (flag == -1)
+            {
+                printf("File %s not found", fileName);
+                break;
+            }
 
-				}
+            i = flag; // flag has file position
 
-			if (i == dcnt)
+            printf("File %s is deleted ", fileName);
+            dir[pos].fileCount--;
+            strcpy(dir[pos].fname[i], dir[pos].fname[dir[pos].fileCount]);
 
-				printf("Directory %s not found", d);
+            break;
 
-			break;
+        case 4: // search file
+            printf("\nEnter name of the directory: ");
+            scanf("%s", dirName);
 
-		case 3:
+            pos = SearchDir(dirName, dirCount);
 
-			printf("\nEnter name of the directory -- ");
+            if (pos == -1)
+            {
+                printf("\nDirectory %s not found\n", dirName);
+                break;
+            }
 
-			scanf("%s", d);
+            printf("Enter name of the file: ");
+            scanf("%s", fileName);
 
-			for (i = 0; i < dcnt; i++)
+            for (i = 0; i < dir[pos].fileCount; i++)
+            {
+                flag = SearchFile(fileName, i);
+                break;
+            }
 
-			{
+            if (flag == -1)
+                printf("File %s not found", fileName);
 
-				if (strcmp(d, dir[i].dname) == 0)
+            else
+                printf("File %s is found ", fileName);
 
-				{
+            break;
 
-					printf("Enter name of the file -- ");
+        case 5:
 
-					scanf("%s", f);
+            if (dirCount == 0)
+            {
+                printf("\nNo Directory's found.");
+                break;
+            }
 
-					for (k = 0; k < dir[i].fcnt; k++)
+            printf("\nDirectory \tFiles");
 
-					{
+            for (i = 0; i < dirCount; i++)
+            {
+                printf("\n%s\t", dir[i].dname);
 
-						if (strcmp(f, dir[i].fname[k]) == 0)
+                for (j = 0; j < dir[i].fileCount; j++)
+                    printf("\t%s", dir[i].fname[j]);
+            }
 
-						{
+            break;
 
-							printf("File %s is deleted ", f);
+        case 6:
+            printf("\n\nExiting...\n\n");
+            break;
 
-							dir[i].fcnt--;
+        default:
+            printf("Enter a valid choice!");
+        }
 
-							strcpy(dir[i].fname[k], dir[i].fname[dir[i].fcnt]);
-
-							goto jmp;
-
-						}
-
-					}
-
-					printf("File %s not found", f);
-
-					goto jmp;
-
-				}
-
-			}
-
-			printf("Directory %s not found", d);
-
-		jmp:
-
-			break;
-
-		case 4:
-
-			printf("\nEnter name of the directory -- ");
-
-			scanf("%s", d);
-
-			for (i = 0; i < dcnt; i++)
-
-			{
-
-				if (strcmp(d, dir[i].dname) == 0)
-
-				{
-
-					printf("Enter the name of the file -- ");
-
-					scanf("%s", f);
-
-					for (k = 0; k < dir[i].fcnt; k++)
-
-					{
-
-						if (strcmp(f, dir[i].fname[k]) == 0)
-
-						{
-
-							printf("File %s is found ", f);
-
-							goto jmp1;
-
-						}
-
-					}
-
-					printf("File %s not found", f);
-
-					goto jmp1;
-
-				}
-
-			}
-
-			printf("Directory %s not found", d);
-
-		jmp1:
-
-			break;
-
-		case 5:
-
-			if (dcnt == 0)
-
-				printf("\nNo Directory's ");
-
-			else
-
-			{
-
-				printf("\nDirectory\tFiles");
-
-				for (i = 0; i < dcnt; i++)
-
-				{
-
-					printf("\n%s\t\t", dir[i].dname);
-
-					for (k = 0; k < dir[i].fcnt; k++)
-
-						printf("\t%s", dir[i].fname[k]);
-
-				}
-
-			}
-
-			break;
-
-		default:
-
-			exit(0);
-
-		}
-
-	}
-
+    } while (ch != 6);
 }
