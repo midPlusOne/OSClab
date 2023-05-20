@@ -1,127 +1,114 @@
-//SINGLE LEVEL DIRECTORY ORGANIZATION
+// SINGLE LEVEL DIRECTORY ORGANIZATION
 
-#include<stdio.h>
-
-#include<stdlib.h>
-
-#include<string.h>
+#include <stdio.h>
+#include <string.h>
 
 struct
-
 {
+    char dname[10];
+    char fname[10][10];
+    int fileCount;
 
-	char dname[10],fname[10][10];	int fcnt;
+} dir;
 
-}dir;
+int SearchFile(char fileName[10])
+{
+    /* if file found return position, otherwise return -1 */
+    int i;
+    for (i = 0; i < dir.fileCount; i++)
+    {
+        if (strcmp(fileName, dir.fname[i]) == 0)
+        {
+            return i;
+            break;
+        }
+    }
+
+    if (i == dir.fileCount)
+        return -1;
+}
 
 void main()
 
 {
 
-	int i,ch;
+    int i, ch, pos;
+    char fileName[30];
 
-	char f[30];
+    dir.fileCount = 0;
 
-	dir.fcnt = 0;
+    printf("\nEnter name of directory: ");
+    scanf("%s", dir.dname);
 
-	printf("\nEnter name of directory -- ");
+    do
+    {
+        printf("\n1. Create File\n2. Delete File\n3. Search File \n4. Display Files\n5. Exit");
+        printf("\nEnter your choice: ");
+        scanf("%d", &ch);
 
-	scanf("%s", dir.dname);
+        switch (ch)
+        {
 
-	while(1) {
+        case 1:
+            printf("\nEnter the name of the file: ");
+            scanf("%s", dir.fname[dir.fileCount]);
 
-		printf("\n\n1. Create File\t2. Delete File\t3. Search File \n 4. Display Files\t5. Exit\nEnter your choice -- ");
+            dir.fileCount++;
+            break;
 
-		scanf("%d",&ch);
+        case 2:
 
-		switch(ch) {
+            printf("\nEnter the name of the file: ");
+            scanf("%s", fileName);
 
-			case 1: 
+            pos = SearchFile(fileName);
 
-				printf("\nEnter the name of the file -- ");
+            if (pos == -1) // File not found
+            {
+                printf("File %s not found", fileName);
+                break;
+            }
 
-				scanf("%s",dir.fname[dir.fcnt]);
+            printf("File %s is deleted ", fileName);
+            strcpy(dir.fname[pos], dir.fname[dir.fileCount - 1]);
+            dir.fileCount--;
 
-				dir.fcnt++;
+            break;
 
-				break;
+        case 3:
+            printf("\nEnter the name of the file: ");
+            scanf("%s", fileName);
 
-			case 2: 
+            pos = SearchFile(fileName);
 
-				printf("\nEnter the name of the file -- ");
+            if (pos == -1)
+                printf("File %s not found", fileName);
+            else
+                printf("File %s is found ", fileName);
 
-				scanf("%s",f);
+            break;
 
-				for(i=0;i<dir.fcnt;i++) {
+        case 4:
 
-					if(strcmp(f, dir.fname[i])==0){
+            if (dir.fileCount == 0)
+            {
+                printf("\nDirectory is Empty.\n");
+                break;
+            }
 
-						printf("File %s is deleted ",f);
+            printf("\nThe Directory %s has Files: \n ", dir.dname);
+            for (i = 0; i < dir.fileCount; i++)
+                printf("\t%s", dir.fname[i]);
 
-						strcpy(dir.fname[i],dir.fname[dir.fcnt-1]);
+            break;
 
-						break;
+        case 5:
+            printf("\n\nExiting...\n\n");
+            break;
 
-					}
+        default:
+            printf("Enter a valid choice!");
+        }
 
-				}
-
-				if(i==dir.fcnt)
-
-					printf("File %s not found",f);
-
-				else
-
-					dir.fcnt--;
-
-				break;
-
-			case 3: 
-
-				printf("\nEnter the name of the file -- ");
-
-				scanf("%s",f);
-
-				for(i=0;i<dir.fcnt;i++) {
-
-					if(strcmp(f, dir.fname[i])==0) {
-
-						printf("File %s is found ", f);
-
-						break;
-
-					}
-
-				}
-
-				if(i==dir.fcnt)
-
-					printf("File %s not found",f);
-
-				break;
-
-			case 4: 
-
-				if(dir.fcnt==0)
-
-					printf("\nDirectory Empty");
-
-				else {
-
-					printf("\nThe Files are -- ");
-
-					for(i=0;i<dir.fcnt;i++)
-
-						printf("\t%s",dir.fname[i]);
-
-				}
-
-				break;
-
-			default: exit(0);
-
-		}
-
-	}
-
+    } while (ch != 5);
 }
