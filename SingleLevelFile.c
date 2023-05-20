@@ -20,18 +20,14 @@ int SearchFile(char fileName[10])
         if (strcmp(fileName, dir.fname[i]) == 0)
         {
             return i;
-            break;
         }
     }
 
-    if (i == dir.fileCount)
-        return -1;
+    return -1;
 }
 
 void main()
-
 {
-
     int i, ch, pos;
     char fileName[30];
 
@@ -51,13 +47,21 @@ void main()
 
         case 1:
             printf("\nEnter the name of the file: ");
-            scanf("%s", dir.fname[dir.fileCount]);
-            printf("File %s created!",dir.fname[dir.fileCount]);
+            scanf("%s", fileName);
+
+            pos = SearchFile(fileName);
+
+            if (pos != -1) //  if File found
+            {
+                printf("File %s already exist", fileName);
+                break;
+            }
+
+            strcpy(dir.fname[dir.fileCount], fileName);
             dir.fileCount++;
             break;
 
         case 2:
-
             printf("\nEnter the name of the file: ");
             scanf("%s", fileName);
 
@@ -89,7 +93,6 @@ void main()
             break;
 
         case 4:
-
             if (dir.fileCount == 0)
             {
                 printf("\nDirectory is Empty.\n");
