@@ -13,7 +13,7 @@ struct
 
 int SearchDir(char dirName[10], int dirCount)
 {
-    /* if Dir found return 1, otherwise return -1 */
+    /* if Dir found return pos, otherwise return -1 */
     int i;
     for (i = 0; i < dirCount; i++)
     {
@@ -35,29 +35,25 @@ int SearchFile(char fileName[10], int pos)
         if (strcmp(fileName, dir[pos].fname[i]) == 0)
         {
             return i;
-            break;
         }
     }
 
-    if (i == dir[pos].fileCount)
-        return -1;
+    return -1;
 }
 
 void main()
-
 {
-
-    int i, j;
-    int ch, dirCount, flag, pos;
+    int i, j, ch;
+    int dirCount, flag, pos;
     char fileName[30], dirName[30];
 
     dirCount = 0;
 
     do
     {
-
         printf("\n\n1. Create Directory\t2. Create File\t3. Delete File");
-        printf("\n4. Search File\t\t5. Display\t6. Exit\t \n Enter your choice: ");
+        printf("\n4. Search File\t\t5. Display\t6. Exit");
+        printf("\nEnter your choice: ");
         scanf("%d", &ch);
 
         switch (ch)
@@ -69,7 +65,7 @@ void main()
 
             pos = SearchDir(dirName, dirCount);
 
-            if (pos != -1)      // flag == -1 means directory already exist
+            if (pos != -1) // flag == -1 means directory already exist
             {
                 printf("\nDirectory %s already exist. Enter other names", dirName);
                 break;
@@ -88,7 +84,7 @@ void main()
 
             pos = SearchDir(dirName, dirCount);
 
-            if (pos == -1)      
+            if (pos == -1)
             {
                 printf("\nDirectory %s not found\n", dirName);
                 break;
@@ -99,14 +95,12 @@ void main()
 
             flag = SearchFile(fileName, pos);
 
-
-            if (flag != -1)       // flag != -1 means file already exist
+            if (flag != -1) // flag != -1 means file already exist
             {
                 printf("File %s already exist", fileName);
                 break;
             }
 
-            
             strcpy(dir[pos].fname[dir[pos].fileCount], fileName);
 
             dir[pos].fileCount++;
@@ -130,7 +124,6 @@ void main()
             printf("Enter name of the file: ");
             scanf("%s", fileName);
 
-
             flag = SearchFile(fileName, pos);
 
             if (flag == -1)
@@ -139,7 +132,7 @@ void main()
                 break;
             }
 
-            i = flag; // flag has file position
+            i = flag;           // flag has file position
 
             printf("File %s is deleted ", fileName);
             dir[pos].fileCount--;
@@ -162,11 +155,8 @@ void main()
             printf("Enter name of the file: ");
             scanf("%s", fileName);
 
-            for (i = 0; i < dir[pos].fileCount; i++)
-            {
-                flag = SearchFile(fileName, i);
-                break;
-            }
+            flag = SearchFile(fileName, pos);
+
 
             if (flag == -1)
                 printf("File %s not found", fileName);
