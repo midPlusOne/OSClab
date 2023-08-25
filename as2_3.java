@@ -6,9 +6,6 @@ online shopping experience using classes from the shopping package
 with exception handling:
 
 */
-
-package Assignment2;
-
 import java.util.Scanner;
 
 public class as2_3 {
@@ -25,7 +22,7 @@ public class as2_3 {
                 System.out.println("\nChoose an option:");
                 System.out.println("1. Add product to cart");
                 System.out.println("2. Remove product from cart");
-                System.out.println("3. View cart");
+                System.out.println("3. Show Cart");
                 System.out.println("4. Check out");
                 System.out.println("5. Exit");
                 System.out.print("Enter your choice: ");
@@ -69,11 +66,9 @@ public class as2_3 {
                         }
 
                         break;
-
-                    case 3:
-                        cart.displayCart();
-                        break;
-
+                    case 3: System.out.println("Items in Cart: \n");
+                    		cart.showCart();
+                        	break;
                     case 4:
                         System.out.println("Total price: ₹" + cart.getTotalPrice());
                         System.out.println("Thank you for shopping!");
@@ -138,9 +133,14 @@ class Cart {
     public boolean removeProduct(String productName) {
         boolean hasRemoved = false;
         for (int i = 0; i < itemCount; i++) {
-            if (items[i] != null && items[i].getName().equalsIgnoreCase(productName)) {
+            if (items[i] != null && items[i].getName().equals(productName)) {
                 items[i] = null;
                 hasRemoved = true;
+                for(int j=i+1;j<itemCount;j++)
+                {
+                	items[j-1]=items[j];
+                }
+                itemCount--;
                 break;
             }
         }
@@ -149,34 +149,21 @@ class Cart {
 
     public double getTotalPrice() {
         double total = 0;
-        for (Product product : items) {
-            if (product != null) {
-                total += product.getPrice();
-            }
+        for(int i=0;i<itemCount;i++)
+        {
+        	if(items[i]!=null)
+        		total+=items[i].getPrice();
         }
         return total;
     }
-
-    public void displayCart() {
-        boolean isEmpty = true;
-
-        StringBuilder builder = new StringBuilder();
-
-
-        for (Product product : items) {
-            if (product != null) {
-                String item = product.getName() + " - ₹" + getTotalPrice() + "\n";
-                builder.append(item);
-                isEmpty = false;
-            }
-        }
-
-        if (isEmpty) {
-            System.out.println("Cart is empty.");
-            return;
-        }
-        System.out.println("\nItems in cart:");
-        System.out.println(builder);
+    public void showCart()
+    {
+    	for(int i=0;i<itemCount;i++)
+    	{
+    		if(items[i]!=null)
+    		{
+    			System.out.println("Item:"+(i+1)+" : "+items[i].getName()+" : "+items[i].getPrice());
+    		}
+    	}
     }
 }
-
