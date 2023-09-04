@@ -1,0 +1,403 @@
+Consider the following database of Student enrollment in courses and books adopted for each courser.
+STUDENT(regno#:string, name:string, major:string, bdate:date)
+COURSE(course#:int, cname:string, dept:STring)
+TEXT(book_ISBN#:int, book_title:string, publisher:string, author:string)
+ENROLL(regno#:string, course#:int, sem:int, book_ISBN:int)
+-Create above tables by properly specifying the primary keys and the foreign keys
+-Enter at least 7 to 10 records to each table.
+
+Execute SQL queries for the following requirements:
+1) List out the student details, and their course details. The records should be ordered in a semester...
+2) List out the student details under a particular department whose name is ordered in a semester wise
+3) List out all the book details under a particular course.
+4) Find out the courses in which number of students studying will be more than 2.
+5) Find out the Publisher who has published more than 2 books.
+6) Find out the authors who have written book for II semester, MCA course.
+7) List out the student details whose total number of months starting from their date of birth is more than 225
+8) Find out the course name to which maximum number of students have joined
+
+
+mysql> create database VP22MC031_Student_Adop;
+Query OK, 1 row affected (0.00 sec)
+
+mysql> use VP22MC031_Student_Adop;
+Database changed
+
+
+create table Student(
+	reg_no char(5) primary key,
+	name varchar(20) not null,
+	major varchar(20),
+	bdate date not null);
+	
++--------+-------------+------+-----+---------+-------+
+| Field  | Type        | Null | Key | Default | Extra |
++--------+-------------+------+-----+---------+-------+
+| reg_no | char(5)     | NO   | PRI | NULL    |       |
+| name   | varchar(20) | NO   |     | NULL    |       |
+| major  | varchar(20) | YES  |     | NULL    |       |
+| bdate  | date        | NO   |     | NULL    |       |
++--------+-------------+------+-----+---------+-------+
+4 rows in set (0.01 sec)
+
+	
+
+create table Course(
+	course_no int(5) primary key,
+	cname varchar(20) not null,
+	dept varchar(20) not null);
+	
++-----------+-------------+------+-----+---------+-------+
+| Field     | Type        | Null | Key | Default | Extra |
++-----------+-------------+------+-----+---------+-------+
+| course_no | int         | NO   | PRI | NULL    |       |
+| cname     | varchar(20) | NO   |     | NULL    |       |
+| dept      | varchar(20) | NO   |     | NULL    |       |
++-----------+-------------+------+-----+---------+-------+
+3 rows in set (0.01 sec)
+
+
+
+create table Text(
+	book_ISBN int(5) primary key,
+	book_title varchar(20) not null,
+	publisher varchar(20),
+	author varchar(20) not null);
+	
++------------+-------------+------+-----+---------+-------+
+| Field      | Type        | Null | Key | Default | Extra |
++------------+-------------+------+-----+---------+-------+
+| book_ISBN  | int         | NO   | PRI | NULL    |       |
+| book_title | varchar(20) | NO   |     | NULL    |       |
+| publisher  | varchar(20) | YES  |     | NULL    |       |
+| author     | varchar(20) | NO   |     | NULL    |       |
++------------+-------------+------+-----+---------+-------+
+4 rows in set (0.01 sec)
+
+	
+	
+create table Enroll(
+	reg_no char(5) not null,
+	course_no int(5) not null,
+	sem int(1) not null,
+	m1 int(3) not null,
+	m2 int(3) not null,
+	m3 int(3) not null,
+	foreign key(reg_no) references Student(reg_no),
+	foreign key(course_no) references Course(course_no));
+	
++-----------+---------+------+-----+---------+-------+
+| Field     | Type    | Null | Key | Default | Extra |
++-----------+---------+------+-----+---------+-------+
+| reg_no    | char(5) | NO   | MUL | NULL    |       |
+| course_no | int     | NO   | MUL | NULL    |       |
+| sem       | int     | NO   |     | NULL    |       |
+| m1        | int     | NO   |     | NULL    |       |
+| m2        | int     | NO   |     | NULL    |       |
+| m3        | int     | NO   |     | NULL    |       |
++-----------+---------+------+-----+---------+-------+
+6 rows in set (0.00 sec)
+
+	
+	
+create table Book_Adop(
+	course_no int(5) not null,
+	sem int(1),
+	book_ISBN int(5),
+	foreign key(course_no) references Course(course_no),
+	foreign key(book_ISBN) references Text(book_ISBN));
+	
+
++-----------+------+------+-----+---------+-------+
+| Field     | Type | Null | Key | Default | Extra |
++-----------+------+------+-----+---------+-------+
+| course_no | int  | NO   | MUL | NULL    |       |
+| sem       | int  | YES  |     | NULL    |       |
+| book_ISBN | int  | YES  | MUL | NULL    |       |
++-----------+------+------+-----+---------+-------+
+3 rows in set (0.01 sec)
+
+
+
+insert into Student values('MC001','Ashish','Java','2001-02-15');
+insert into Student values('MC002','Akshay','C++','2000-02-15');
+insert into Student values('MC003','Avinash','Java','2001-11-10');
+insert into Student values('MC004','Jayesh','Java','2001-02-01');
+insert into Student values('MC005','Bakshi','C','2001-05-29');
+insert into Student values('MC006','Rakshit','C','2000-07-30');
+insert into Student values('MC007','Rajesh','C++','1999-03-02');
+insert into Student values('MC008','Ramesh','Python','2000-09-02');
+
++--------+---------+--------+------------+
+| reg_no | name    | major  | bdate      |
++--------+---------+--------+------------+
+| MC001  | Ashish  | Java   | 2001-02-15 |
+| MC002  | Akshay  | C++    | 2000-02-15 |
+| MC003  | Avinash | Java   | 2001-11-10 |
+| MC004  | Jayesh  | Java   | 2001-02-01 |
+| MC005  | Bakshi  | C      | 2001-05-29 |
+| MC006  | Rakshit | C      | 2000-07-30 |
+| MC007  | Rajesh  | C++    | 1999-03-02 |
+| MC008  | Ramesh  | Python | 2000-09-02 |
++--------+---------+--------+------------+
+8 rows in set (0.00 sec)
+
+
+insert into Course values(101,'Python','MCA');
+insert into Course values(102,'Java','MCA');
+insert into Course values(103,'C','MCA');
+insert into Course values(104,'C++','MCA');
+insert into Course values(105,'Finance','MBA');
+insert into Course values(106,'CAD','Civil');
+insert into Course values(107,'Accountancy','MBA');
+
++-----------+-------------+-------+
+| course_no | cname       | dept  |
++-----------+-------------+-------+
+|       101 | Python      | MCA   |
+|       102 | Java        | MCA   |
+|       103 | C           | MCA   |
+|       104 | C++         | MCA   |
+|       105 | Finance     | MBA   |
+|       106 | CAD         | Civil |
+|       107 | Accountancy | MBA   |
++-----------+-------------+-------+
+7 rows in set (0.01 sec)
+
+
+insert into Text values(1101,'Programming in C++','PrintIt Publishers','Pratham Das');
+insert into Text values(1102,'Programming in C','PrintIt Publishers','Partha Das');
+insert into Text values(1103,'Java made easy','Sapna Books','Dr.Rohit');
+insert into Text values(1104,'Efficient Finance','New Publishers','Dr.Ankith');
+insert into Text values(1105,'Business Management','New Publishers','Dr.Ankith');
+insert into Text values(1106,'Modern C++','PrintIt Publishers','Pratham Das');
+insert into Text values(1107,'HTML and CSS','Sapna Books','Ramesh Sagar');
+
++-----------+---------------------+--------------------+--------------+
+| book_ISBN | book_title          | publisher          | author       |
++-----------+---------------------+--------------------+--------------+
+|      1101 | Programming in C++  | PrintIt Publishers | Pratham Das  |
+|      1102 | Programming in C    | PrintIt Publishers | Partha Das   |
+|      1103 | Java made easy      | Sapna Books        | Dr.Rohit     |
+|      1104 | Efficient Finance   | New Publishers     | Dr.Ankith    |
+|      1105 | Business Management | New Publishers     | Dr.Ankith    |
+|      1106 | Modern C++          | PrintIt Publishers | Pratham Das  |
+|      1107 | HTML and CSS        | Sapna Books        | Ramesh Sagar |
++-----------+---------------------+--------------------+--------------+
+7 rows in set (0.01 sec)
+
+
+insert into Enroll values('MC003',102,2,78,80,91);
+insert into Enroll values('MC003',104,2,60,65,70);
+insert into Enroll values('MC003',101,2,55,65,75);
+insert into Enroll values('MC001',103,3,80,81,91);
+insert into Enroll values('MC002',106,3,78,55,65);
+insert into Enroll values('MC004',106,4,50,50,60);
+insert into Enroll values('MC005',107,4,65,55,45);
+insert into Enroll values('MC005',106,4,71,81,91);
+insert into Enroll values('MC006',102,2,65,66,67);
+insert into Enroll values('MC007',104,2,50,81,74);
+insert into Enroll values('MC008',105,3,44,35,68);
+
++--------+-----------+-----+----+----+----+
+| reg_no | course_no | sem | m1 | m2 | m3 |
++--------+-----------+-----+----+----+----+
+| MC003  |       102 |   2 | 78 | 80 | 91 |
+| MC003  |       104 |   2 | 60 | 65 | 70 |
+| MC003  |       101 |   2 | 55 | 65 | 75 |
+| MC001  |       103 |   3 | 80 | 81 | 91 |
+| MC002  |       106 |   3 | 78 | 55 | 65 |
+| MC004  |       106 |   4 | 50 | 50 | 60 |
+| MC005  |       107 |   4 | 65 | 55 | 45 |
+| MC005  |       106 |   4 | 71 | 81 | 91 |
+| MC006  |       102 |   2 | 65 | 66 | 67 |
+| MC007  |       104 |   2 | 50 | 81 | 74 |
+| MC008  |       105 |   3 | 44 | 35 | 68 |
++--------+-----------+-----+----+----+----+
+11 rows in set (0.01 sec)
+
+
+insert into Book_Adop values(101,2,1101);
+insert into Book_Adop values(101,2,1102);
+insert into Book_Adop values(102,2,1103);
+insert into Book_Adop values(103,3,1102);
+insert into Book_Adop values(104,2,1101);
+insert into Book_Adop values(105,3,1104);
+insert into Book_Adop values(106,4,1105);
+insert into Book_Adop values(107,4,1104);
+insert into Book_Adop values(107,4,1105);
+
++-----------+------+-----------+
+| course_no | sem  | book_ISBN |
++-----------+------+-----------+
+|       101 |    2 |      1101 |
+|       101 |    2 |      1102 |
+|       102 |    2 |      1103 |
+|       103 |    3 |      1102 |
+|       104 |    2 |      1101 |
+|       105 |    3 |      1104 |
+|       106 |    4 |      1105 |
+|       107 |    4 |      1104 |
+|       107 |    4 |      1105 |
++-----------+------+-----------+
+9 rows in set (0.00 sec)
+
+
+-------------------------------------------------------------------------------------------------------------------------
+
+1)
+select s.reg_no,s.name,s.bdate,e.sem,c.course_no,c.cname,c.dept
+	from Student s,Course c,Enroll e
+		where s.reg_no=e.reg_no and c.course_no=e.course_no
+			order by e.sem;
+			
++--------+---------+------------+-----+-----------+-------------+-------+
+| reg_no | name    | bdate      | sem | course_no | cname       | dept  |
++--------+---------+------------+-----+-----------+-------------+-------+
+| MC003  | Avinash | 2001-11-10 |   2 |       101 | Python      | MCA   |
+| MC003  | Avinash | 2001-11-10 |   2 |       102 | Java        | MCA   |
+| MC006  | Rakshit | 2000-07-30 |   2 |       102 | Java        | MCA   |
+| MC003  | Avinash | 2001-11-10 |   2 |       104 | C++         | MCA   |
+| MC007  | Rajesh  | 1999-03-02 |   2 |       104 | C++         | MCA   |
+| MC001  | Ashish  | 2001-02-15 |   3 |       103 | C           | MCA   |
+| MC002  | Akshay  | 2000-02-15 |   3 |       105 | Finance     | MBA   |
+| MC008  | Ramesh  | 2000-09-02 |   3 |       105 | Finance     | MBA   |
+| MC004  | Jayesh  | 2001-02-01 |   4 |       106 | CAD         | Civil |
+| MC005  | Bakshi  | 2001-05-29 |   4 |       106 | CAD         | Civil |
+| MC005  | Bakshi  | 2001-05-29 |   4 |       107 | Accountancy | MBA   |
++--------+---------+------------+-----+-----------+-------------+-------+
+11 rows in set (0.00 sec)
+
+
+
+2)
+select s.reg_no,s.name,e.course_no,e.sem,c.dept
+	from Student s,Course c,Enroll e
+		where s.reg_no=e.reg_no and e.course_no=c.course_no and c.dept='MCA'
+			order by e.sem;
+			
++--------+---------+-----------+-----+------+
+| reg_no | name    | course_no | sem | dept |
++--------+---------+-----------+-----+------+
+| MC003  | Avinash |       101 |   2 | MCA  |
+| MC003  | Avinash |       102 |   2 | MCA  |
+| MC006  | Rakshit |       102 |   2 | MCA  |
+| MC003  | Avinash |       104 |   2 | MCA  |
+| MC007  | Rajesh  |       104 |   2 | MCA  |
+| MC001  | Ashish  |       103 |   3 | MCA  |
++--------+---------+-----------+-----+------+
+6 rows in set (0.00 sec)
+
+
+3)
+select c.course_no,c.cname,t.book_ISBN,t.book_title,t.publisher,t.author
+	from Course c,Text t,Book_Adop b
+		where c.course_no=b.course_no and b.book_ISBN=t.book_ISBN;
+		
++-----------+-------------+-----------+---------------------+--------------------+-------------+
+| course_no | cname       | book_ISBN | book_title          | publisher          | author      |
++-----------+-------------+-----------+---------------------+--------------------+-------------+
+|       101 | Python      |      1101 | Programming in C++  | PrintIt Publishers | Pratham Das |
+|       101 | Python      |      1102 | Programming in C    | PrintIt Publishers | Partha Das  |
+|       102 | Java        |      1103 | Java made easy      | Sapna Books        | Dr.Rohit    |
+|       103 | C           |      1102 | Programming in C    | PrintIt Publishers | Partha Das  |
+|       104 | C++         |      1101 | Programming in C++  | PrintIt Publishers | Pratham Das |
+|       105 | Finance     |      1104 | Efficient Finance   | New Publishers     | Dr.Ankith   |
+|       106 | CAD         |      1105 | Business Management | New Publishers     | Dr.Ankith   |
+|       107 | Accountancy |      1104 | Efficient Finance   | New Publishers     | Dr.Ankith   |
+|       107 | Accountancy |      1105 | Business Management | New Publishers     | Dr.Ankith   |
++-----------+-------------+-----------+---------------------+--------------------+-------------+
+9 rows in set (0.00 sec)
+
+
+
+4)	
+select c.course_no, cname, count(*) as num_students
+from Enroll e
+join Course c on e.course_no = c.course_no
+group by c.course_no
+having num_students > 2;
+
+
++-----------+-------+--------------+
+| course_no | cname | num_students |
++-----------+-------+--------------+
+|       106 | CAD   |            3 |
++-----------+-------+--------------+
+1 row in set (0.00 sec)
+
+
+5)
+select t.publisher, count(*) as num_books
+from Text t
+join Book_Adop b on t.book_ISBN = b.book_ISBN
+group by t.publisher
+having num_books > 2;
+
++--------------------+-----------+
+| publisher          | num_books |
++--------------------+-----------+
+| PrintIt Publishers |         4 |
+| New Publishers     |         4 |
++--------------------+-----------+
+2 rows in set (0.00 sec)
+
+
+6)
+select t.author
+from Text t
+join Book_Adop b on t.book_ISBN = b.book_ISBN
+join Course c on b.course_no = c.course_no
+join Enroll e on c.course_no = e.course_no
+where e.sem = 2 and c.dept = 'MCA'
+group by t.author;
+
++-------------+
+| author      |
++-------------+
+| Pratham Das |
+| Partha Das  |
+| Dr.Rohit    |
++-------------+
+3 rows in set (0.00 sec)
+
+
+7)
+select s.reg_no, s.name, s.major, s.bdate
+from Enroll e
+join Student s on e.reg_no = s.reg_no
+where TIMESTAMPDIFF(MONTH, s.bdate, CURDATE()) > 225;
+
++--------+---------+--------+------------+
+| reg_no | name    | major  | bdate      |
++--------+---------+--------+------------+
+| MC001  | Ashish  | Java   | 2001-02-15 |
+| MC002  | Akshay  | C++    | 2000-02-15 |
+| MC003  | Avinash | Java   | 2001-11-10 |
+| MC003  | Avinash | Java   | 2001-11-10 |
+| MC003  | Avinash | Java   | 2001-11-10 |
+| MC004  | Jayesh  | Java   | 2001-02-01 |
+| MC005  | Bakshi  | C      | 2001-05-29 |
+| MC005  | Bakshi  | C      | 2001-05-29 |
+| MC006  | Rakshit | C      | 2000-07-30 |
+| MC007  | Rajesh  | C++    | 1999-03-02 |
+| MC008  | Ramesh  | Python | 2000-09-02 |
++--------+---------+--------+------------+
+11 rows in set (0.00 sec)
+
+
+8)
+select c.cname
+from Enroll e
+join Course c on e.course_no = c.course_no
+group by c.course_no
+order by count(*) desc
+limit 1;
+
++-------+
+| cname |
++-------+
+| CAD   |
++-------+
+1 row in set (0.00 sec)
+
