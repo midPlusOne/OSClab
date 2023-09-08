@@ -363,27 +363,22 @@ group by t.author;
 
 
 7)
-select s.reg_no, s.name, s.major, s.bdate
-from Enroll e
-join Student s on e.reg_no = s.reg_no
-where TIMESTAMPDIFF(MONTH, s.bdate, CURDATE()) > 225;
+select reg_no,name,major,bdate,period_diff(date_format(curdate(),"%Y%m"),date_format(bdate,"%Y%m")) as Difference from Student where period_diff(date_format(curdate(),"%Y%m"),date_format(bdate,"%Y%m"))>225;
 
-+--------+---------+--------+------------+
-| reg_no | name    | major  | bdate      |
-+--------+---------+--------+------------+
-| MC001  | Ashish  | Java   | 2001-02-15 |
-| MC002  | Akshay  | C++    | 2000-02-15 |
-| MC003  | Avinash | Java   | 2001-11-10 |
-| MC003  | Avinash | Java   | 2001-11-10 |
-| MC003  | Avinash | Java   | 2001-11-10 |
-| MC004  | Jayesh  | Java   | 2001-02-01 |
-| MC005  | Bakshi  | C      | 2001-05-29 |
-| MC005  | Bakshi  | C      | 2001-05-29 |
-| MC006  | Rakshit | C      | 2000-07-30 |
-| MC007  | Rajesh  | C++    | 1999-03-02 |
-| MC008  | Ramesh  | Python | 2000-09-02 |
-+--------+---------+--------+------------+
-11 rows in set (0.00 sec)
++--------+---------+--------+------------+------------+
+| reg_no | name    | major  | bdate      | Difference |
++--------+---------+--------+------------+------------+
+| MC001  | Ashish  | Java   | 2001-02-15 |        271 |
+| MC002  | Akshay  | C++    | 2000-02-15 |        283 |
+| MC003  | Avinash | Java   | 2001-11-10 |        262 |
+| MC004  | Jayesh  | Java   | 2001-02-01 |        271 |
+| MC005  | Bakshi  | C      | 2001-05-29 |        268 |
+| MC006  | Rakshit | C      | 2000-07-30 |        278 |
+| MC007  | Rajesh  | C++    | 1999-03-02 |        294 |
+| MC008  | Ramesh  | Python | 2000-09-02 |        276 |
++--------+---------+--------+------------+------------+
+8 rows in set (0.00 sec)
+
 
 
 8)
