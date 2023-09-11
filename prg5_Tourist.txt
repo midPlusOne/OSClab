@@ -1,0 +1,247 @@
+Design an ER-diagram for the following scenario, Convert the same into a relational model, normalize Relations
+into a suitable Normal form and then solve the following queries. A country can have many Tourist places . Each
+Tourist place is identified by using tourist_place_id, having a name, belongs to a state, Number of kilometers
+away from the 02.03.2021 updated 52/ 104 capital city of that state,history. There are many Tourists visits tourist
+places every year. Each tourist is identified uniquely by using Tourist_id, having a Name, age, Country and
+multiple emailids. A tourist visits many Tourist places, it is also required to record the visted_date in the
+database. A tourist can visit a Tourist place many times at different dates. A Tourist place can be visited by many
+tourists either in the same date or at different dates.
+
+Queries:
+i. List the state name which is having maximum number of tourist places.
+ii. List details of Tourist place where maximum number of tourists visited.
+iii. List the details of tourists visited all tourist places of the state “KARNATAKA”.
+iv. Display the details of the tourists visited at least one tourist place of the state, but visited all states tourist
+places.
+v. Display the details of the tourist place visited by the tourists of all country.
+
+https://mitmysore.in/downloads/dbmslabmanual.pdf
+
+----------------------------------------------------------------------------------------------
+
+mysql> create database VP22MC031_Tourist;
+Query OK, 1 row affected (0.01 sec)
+
+
+mysql> use VP22MC031_Tourist;
+Database changed
+
+
+
+
+create table T_Place(
+	P_id varchar(5) primary key,
+	P_name varchar(20) not null,
+	State varchar(20) not null,
+	No_km int(5),
+	History varchar(20));
+	
++---------+-------------+------+-----+---------+-------+
+| Field   | Type        | Null | Key | Default | Extra |
++---------+-------------+------+-----+---------+-------+
+| P_id    | varchar(5)  | NO   | PRI | NULL    |       |
+| P_name  | varchar(20) | NO   |     | NULL    |       |
+| State   | varchar(20) | NO   |     | NULL    |       |
+| No_km   | int         | YES  |     | NULL    |       |
+| History | varchar(20) | YES  |     | NULL    |       |
++---------+-------------+------+-----+---------+-------+
+5 rows in set (0.00 sec)
+
+
+create table Tourist(
+	T_id varchar(5) primary key,
+	Name varchar(20) not null,
+	Age int (3) not null,
+	Country varchar(20));
+	
++---------+-------------+------+-----+---------+-------+
+| Field   | Type        | Null | Key | Default | Extra |
++---------+-------------+------+-----+---------+-------+
+| T_id    | varchar(5)  | NO   | PRI | NULL    |       |
+| Name    | varchar(20) | NO   |     | NULL    |       |
+| Age     | int         | NO   |     | NULL    |       |
+| Country | varchar(20) | YES  |     | NULL    |       |
++---------+-------------+------+-----+---------+-------+
+4 rows in set (0.00 sec)
+
+
+create table Email(
+	T_id varchar(5),
+	Email varchar(25),
+	foreign key(T_id) references Tourist(T_id));
+
++-------+-------------+------+-----+---------+-------+
+| Field | Type        | Null | Key | Default | Extra |
++-------+-------------+------+-----+---------+-------+
+| T_id  | varchar(5)  | YES  | MUL | NULL    |       |
+| Email | varchar(25) | YES  |     | NULL    |       |
++-------+-------------+------+-----+---------+-------+
+2 rows in set (0.01 sec)
+
+
+
+create table Visits(
+	T_id varchar(5),
+	P_id varchar(5),
+	DateVisited date,
+	foreign key(T_id) references Tourist(T_id),
+	foreign key(P_id) references T_Place(P_id));
+	
++-------------+------------+------+-----+---------+-------+
+| Field       | Type       | Null | Key | Default | Extra |
++-------------+------------+------+-----+---------+-------+
+| T_id        | varchar(5) | YES  | MUL | NULL    |       |
+| P_id        | varchar(5) | YES  | MUL | NULL    |       |
+| DateVisited | date       | YES  |     | NULL    |       |
++-------------+------------+------+-----+---------+-------+
+3 rows in set (0.00 sec)
+
+
+
+insert into T_Place values('P_01','Ooty','Tamil Nadu',160,'Beauty');
+insert into T_Place values('P_02','Beluru','Karnataka',270,'Monuments');
+insert into T_Place values('P_03','Munnar','Kerala',360,'Hill Station');
+insert into T_Place values('P_04','Mullayangiri','Karnataka',150,'Hill Station');
+
++------+--------------+------------+-------+--------------+
+| P_id | P_name       | State      | No_km | History      |
++------+--------------+------------+-------+--------------+
+| P_01 | Ooty         | Tamil Nadu |   160 | Beauty       |
+| P_02 | Beluru       | Karnataka  |   270 | Monuments    |
+| P_03 | Munnar       | Kerala     |   360 | Hill Station |
+| P_04 | Mullayangiri | Karnataka  |   150 | Hill Station |
++------+--------------+------------+-------+--------------+
+4 rows in set (0.00 sec)
+
+
+
+insert into Tourist values('T_01','Prakash',34,'India');
+insert into Tourist values('T_02','Maria',41,'London');
+insert into Tourist values('T_03','Ajay',25,'India');
+
++------+---------+-----+---------+
+| T_id | Name    | Age | Country |
++------+---------+-----+---------+
+| T_01 | Prakash |  34 | India   |
+| T_02 | Maria   |  41 | London  |
+| T_03 | Ajay    |  25 | India   |
++------+---------+-----+---------+
+3 rows in set (0.00 sec)
+
+
+insert into Email values('T_01','prakash12@gmail.com');
+insert into Email values('T_02','maria_1991@outlook.com');
+insert into Email values('T_03','ajayjay@gmail.com');
+
++------+------------------------+
+| T_id | Email                  |
++------+------------------------+
+| T_01 | prakash12@gmail.com    |
+| T_02 | maria_1991@outlook.com |
+| T_03 | ajayjay@gmail.com      |
++------+------------------------+
+3 rows in set (0.00 sec)
+
+
+insert into Visits values('T_02','P_01','2021-05-15');
+insert into Visits values('T_01','P_03','2015-03-12');
+insert into Visits values('T_03','P_01','2020-10-30');
+insert into Visits values('T_02','P_02','2018-01-01');
+insert into Visits values('T_03','P_02','2022-05-15');
+insert into Visits values('T_02','P_03','2019-04-25');
+insert into Visits values('T_02','P_04','2019-04-25');
+
+
++------+------+-------------+
+| T_id | P_id | DateVisited |
++------+------+-------------+
+| T_02 | P_01 | 2021-05-15  |
+| T_01 | P_03 | 2015-03-12  |
+| T_03 | P_01 | 2020-10-30  |
+| T_02 | P_02 | 2018-01-01  |
+| T_03 | P_02 | 2022-05-15  |
+| T_02 | P_03 | 2019-04-25  |
+| T_02 | P_04 | 2019-04-25  |
++------+------+-------------+
+7 rows in set (0.01 sec)
+
+-------------------------------------------------------------------------------------------------------------
+
+
+1)
+select State, count(*) as Num_Places
+from T_Place
+group by State
+order by Num_Places desc
+limit 1;
+
++-----------+------------+
+| State     | Num_Places |
++-----------+------------+
+| Karnataka |          2 |
++-----------+------------+
+1 row in set (0.00 sec)
+
+
+2)
+select tp.P_id,tp.P_name,tp.State,count(tv.T_id)
+	from T_Place tp,Visits tv where tv.P_id=tp.P_id
+	group by tv.P_id order by count(tv.T_id) desc limit 1;
+
++------+--------+------------+----------------+
+| P_id | P_name | State      | count(tv.T_id) |
++------+--------+------------+----------------+
+| P_01 | Ooty   | Tamil Nadu |              2 |
++------+--------+------------+----------------+
+1 row in set (0.00 sec)
+
+
+
+3)
+select tv.T_id,t.Name,t.Age,count(tv.T_id) as No_of_Places
+from Visits tv, Tourist t, T_Place tp
+	where t.T_id=tv.T_id and tp.P_id=tv.P_id and State="Karnataka"
+	group by tv.T_id having count(tv.T_id)>=
+	(select count(P_id) from T_Place where state="Karnataka");
+
++------+-------+-----+--------------+
+| T_id | Name  | Age | No_of_Places |
++------+-------+-----+--------------+
+| T_02 | Maria |  41 |            2 |
++------+-------+-----+--------------+
+1 row in set (0.00 sec)
+
+
+
+4)
+select T_id,count(distinct P_id)
+from Visits group by T_id
+	having count(distinct P_id)>=
+	(select count(distinct State) from T_Place);
+	
++------+----------------------+
+| T_id | count(distinct P_id) |
++------+----------------------+
+| T_02 |                    4 |
++------+----------------------+
+1 row in set (0.00 sec)
+
+
+
+5)
+select tv.P_id,count(tv.T_id) as No_of_Visitors,
+count(distinct t.Country) as No_of_Contries
+from Visits tv,Tourist t,T_Place tp
+where tv.T_id=t.T_id and tv.P_id=tp.P_id
+group by tv.P_id having count(distinct t.Country)>=(select
+count(distinct t.Country) from Tourist t);
+
++------+----------------+----------------+
+| P_id | No_of_Visitors | No_of_Contries |
++------+----------------+----------------+
+| P_01 |              2 |              2 |
+| P_02 |              2 |              2 |
+| P_03 |              2 |              2 |
++------+----------------+----------------+
+3 rows in set (0.00 sec)
+
